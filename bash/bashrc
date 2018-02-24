@@ -1,0 +1,17 @@
+[ -z "$PS1" ] && return
+
+export EDITOR=/usr/bin/vim
+
+export JAVA_HOME=$(/usr/libexec/java_home)
+export CS61B_LIB_DIR="$HOME/Documents/Repositories/cs-61b/javalib/*"
+export CLASSPATH="$CLASSPATH:$CS61B_LIB_DIR:./"
+
+PATH="$PATH:$HOME/Documents/Google Cloud Platform/google-cloud-sdk/bin"
+export PATH
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+bind "set completion-ignore-case on"
+bind "set show-all-if-ambiguous on"
+
