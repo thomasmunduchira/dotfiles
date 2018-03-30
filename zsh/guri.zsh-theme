@@ -141,11 +141,11 @@ get_ret_status() {
     echo "%(?:%{$fg_bold[green]%}$GURI_PROMPT_SYMBOL:%{$fg_bold[red]%}$GURI_PROMPT_SYMBOL) "
 }
 
-add-zsh-hook chpwd run_dot_file
-add-zsh-hook precmd virtualenv_indicator
+chpwd_functions+=(run_dot_file)
+precmd_functions+=(virtualenv_indicator)
 
-add-zsh-hook preexec exec_time_start
-add-zsh-hook precmd exec_time_stop
+preexec_functions+=(exec_time_start)
+precmd_functions+=(exec_time_stop)
 
 PROMPT='
 $(level_prompt_info)$(git_prompt_info)$fg[yellow]%2v$(dockerm_prompt_info)$(exec_time_prompt_info)
