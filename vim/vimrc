@@ -1,77 +1,86 @@
-"Author: Thomas Munduchira
+" Author: Thomas Munduchira
 
 call plug#begin()
 
-Plug '907th/vim-auto-save'
+Plug '907th/vim-auto-save' " automatically save buffers
 
-Plug 'altercation/vim-colors-solarized'
+Plug 'altercation/vim-colors-solarized' " color scheme
 
-Plug 'Shougo/denite.nvim'
+Plug 'itchyny/lightline.vim' " status bar
 
-Plug 'w0rp/ale'
+Plug 'scrooloose/nerdtree' " file explorer
+Plug 'Xuyuanp/nerdtree-git-plugin' " git plugin for nerdtree
 
-Plug 'SirVer/ultisnips'
-Plug 'tpope/vim-commentary'
+Plug 'Shougo/denite.nvim' " file searcher and more
 
-Plug 'scrooloose/nerdtree'
-Plug 'Xuyuanp/nerdtree-git-plugin'
+" autocomplete
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
 
-Plug 'itchyny/lightline.vim'
+Plug 'w0rp/ale' " linting
 
-Plug 'JamshedVesuna/vim-markdown-preview'
-Plug 'lervag/vimtex'
+Plug 'SirVer/ultisnips' " snippets
 
-Plug 'elmcast/elm-vim'
-Plug 'jalvesaq/nvim-r'
-Plug 'l04m33/vlime', { 'rtp': 'vim/' }
-Plug 'bhurlow/vim-parinfer'
+Plug 'tpope/vim-commentary' " commenting support
+
+" JavaScript
+Plug 'carlitux/deoplete-ternjs' " JavaScript autocomplete
+Plug 'steelsojka/deoplete-flow' " Flow autocomplete
+
+" Elm
+Plug 'elmcast/elm-vim' " Vim suport for Elm
+
+" Elixir
+Plug 'elixir-lang/vim-elixir' " Vim support for Elixir
+
+" R
+Plug 'jalvesaq/nvim-r' " dev environment for R
+
+" Lisp
+Plug 'l04m33/vlime', { 'rtp': 'vim/' } " dev environment for Lisp
+Plug 'bhurlow/vim-parinfer' " indent lisp code
+
+" Markdown
+Plug 'JamshedVesuna/vim-markdown-preview' " preview Markdown files
+
+" LaTeX
+Plug 'lervag/vimtex' " Vim support for LaTeX
 
 call plug#end()
 
 set nocompatible
-
-let mapleader=","
-
-let g:auto_save = 1  " enable AutoSave on Vim startup
-
-nnoremap <silent> <c-p> :Denite file_rec<CR>
-nnoremap <silent> <leader>b :Denite buffer<CR>
-
-let g:deoplete#enable_at_startup=1
-let g:deoplete#file#enable_buffer_path=1
-inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-let g:deoplete#sources={}
-let g:deoplete#sources._    = ['buffer', 'file', 'ultisnips']
-let g:deoplete#sources.ruby = ['buffer', 'member', 'file', 'ultisnips']
-let g:deoplete#sources.vim  = ['buffer', 'member', 'file', 'ultisnips']
-let g:deoplete#sources['javascript.jsx'] = ['buffer', 'file', 'ultisnips', 'ternjs']
-let g:deoplete#sources.css  = ['buffer', 'member', 'file', 'omni', 'ultisnips']
-let g:deoplete#sources.scss = ['buffer', 'member', 'file', 'omni', 'ultisnips']
-let g:deoplete#sources.html = ['buffer', 'member', 'file', 'omni', 'ultisnips']
-
-let g:ale_fixers = {
-\  'javascript': ['eslint'],
-\}
-
+syntax enable
+set background=dark
 set autoread
 au FocusLost,WinLeave * :silent! wa
 au FocusGained,BufEnter * :silent! !
 
-set number "Line numbers on
+" Settings
+
+set number " line numbers on
 set history=1000
-set showcmd "Show commands as you type them
+set showcmd " show commands as you type them
 set autoread
-set hidden
-set clipboard+=unnamed
+set noswapfile " new buffers will be loaded without creating a swapfile
+set hidden " enables to switch between unsaved buffers and keep undo history
+set splitbelow " splitting a window will put the new window below the current
+set splitright " splitting a window will put the new window right of the current
+set clipboard+=unnamed " allow to use system clipboard
 
-set splitbelow
-set splitright
-
-" Time out on key codes but not mapping set notimeout
+" time out on key codes but not mapping set notimeout
+set notimeout
 set ttimeout
 set ttimeoutlen=10
 
-let g:mapleader=","
+" Leader key
+let g:mapleader = "," " set leader to comma
+
+" Mappings
 
 nnoremap j gj
 nnoremap k gk
@@ -89,16 +98,9 @@ vnoremap L g_
 
 nnoremap Y y$
 
-syntax enable
-set background=dark
-let g:solarized_termcolors = 16
-let g:solarized_termtrans = 1
-colorscheme solarized
-
 " autocmd StdinReadPre * let s:std_in=1
 " autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
-set noswapfile
 set nobackup
 set nowb
 
@@ -131,7 +133,7 @@ set linebreak
 
 set foldmethod=indent
 set foldnestmax=3
-set nofoldenable 
+set nofoldenable
 
 set wildmode=list:longest
 set wildmenu
@@ -154,9 +156,6 @@ else
   let &t_EI = "\e[2 q"
 endif
 
-let vim_markdown_preview_github=1
-let vim_markdown_preview_toggle=2
-
 set incsearch
 set hlsearch
 set ignorecase
@@ -168,9 +167,45 @@ augroup CursorLineOnlyInActiveWindow
   autocmd WinLeave * setlocal nocursorline
 augroup END
 
-"For lightline
+" Color scheme configuration
+let g:solarized_termcolors = 16
+let g:solarized_termtrans = 1
+colorscheme solarized " use Solarized color scheme
+
+" Lightline configuration
 set laststatus=2
 set noshowmode
 
+" Autosave configuration
+let g:auto_save = 1 " enable AutoSave on Vim startup
+
+" Denite configuration
+nnoremap <silent> <c-p> :Denite file_rec<CR>
+nnoremap <silent> <leader>b :Denite buffer<CR>
+
+" Deoplete configuration
+let g:deoplete#enable_at_startup = 1
+let g:deoplete#file#enable_buffer_path = 1
+let g:deoplete#sources={}
+let g:deoplete#sources._    = ['buffer', 'file', 'ultisnips']
+let g:deoplete#sources.vim  = ['buffer', 'member', 'file', 'ultisnips']
+let g:deoplete#sources['javascript.jsx'] = ['buffer', 'file', 'ultisnips', 'ternjs']
+let g:deoplete#sources.css  = ['buffer', 'member', 'file', 'omni', 'ultisnips']
+let g:deoplete#sources.scss = ['buffer', 'member', 'file', 'omni', 'ultisnips']
+let g:deoplete#sources.html = ['buffer', 'member', 'file', 'omni', 'ultisnips']
+inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+
+" Ale configuration
+let g:ale_fixers = {
+\  'javascript': ['eslint'],
+\}
+
+" Vim Markdown Preview configuration
+let vim_markdown_preview_toggle = 2
+let vim_markdown_preview_temp_file = 1
+let vim_markdown_preview_github = 1
+
+" nvim-r configuration
 vmap <Space> <Plug>RDSendSelection
 nmap <Space> <Plug>RDSendLine
+
