@@ -1,0 +1,16 @@
+[user]
+  name = Thomas Munduchira
+  email = thomas@thomasmunduchira.com
+  signingKey = CFE1C6BEB53C065A
+[credential]
+  helper = osxkeychain
+[core]
+  editor = nvim
+  excludesfile = ~/.gitignore
+[push]
+  default = simple
+[commit]
+  gpgSign = true
+[github]
+  user = thomasmunduchira
+
