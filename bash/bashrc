@@ -15,3 +15,5 @@ export NVM_DIR="$HOME/.nvm"
 bind "set completion-ignore-case on"
 bind "set show-all-if-ambiguous on"
 
+export GPG_TTY=$(tty)
+
