@@ -1,26 +1,37 @@
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 
-export EDITOR=/usr/bin/vim
+export EDITOR=nvim
+# Preferred editor for local and remote sessions
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR=vim
+fi
 
 export JAVA_HOME=$(/usr/libexec/java_home)
 
-PATH="$PATH:$HOME/Documents/Google Cloud Platform/google-cloud-sdk/bin"
-export PATH
+export PATH="$PATH:$HOME/Documents/Google Cloud Platform/google-cloud-sdk/bin"
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+export GPG_TTY=$(tty)
+export FZF_DEFAULT_COMMAND='rg --files --hidden --smart-case --follow --glob "!.git/*"'
 
-source $(brew --prefix nvm)/nvm.sh
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# source $(brew --prefix nvm)/nvm.sh
 
 ZSH_THEME="guri"
 
 plugins=(
   git
+  jsontools
+  zsh-autosuggestions
+  zsh-syntax-highlighting
 )
 
 source $ZSH/oh-my-zsh.sh
 
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# Bind Node Version Manager and load it
+export NVM_DIR=~/.nvm
+source $(brew --prefix nvm)/nvm.sh --no-use
 
