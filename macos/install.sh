@@ -12,18 +12,23 @@ VIM_DIR="vim"
 BASH_DIR="bash"
 ZSH_DIR="zsh"
 GIT_DIR="git"
+TMUX_DIR="tmux"
 MACOS_DIR="macos"
+GNUPG_DIR="gnugp"
 
 BASH_IT_CONFIG="$HOME/.bash_it"
 OH_MY_ZSH_CONFIG="$HOME/.oh-my-zsh"
 VIM_CONFIG="$HOME/.vim"
 NEOVIM_CONFIG="$HOME/.config/nvim"
 NEOVIM_LOCAL="$HOME/.local/share/nvim/site"
+GNUPG="$HOME/.gnupg"
 
-BASH_FILES=("bashrc" "bash_profile")
-ZSH_FILES=("zshrc")
-GIT_FILES=("gitignore")
-VIM_FILES=("vimrc")
+BASH_FILES=(bashrc bash_profile)
+ZSH_FILES=(zshrc)
+GIT_FILES=(gitignore gitconfig)
+VIM_FILES=(vimrc)
+TMUX_FILES=("tmux.conf")
+GNUPG_FILES=("gpg.conf" "gpg-agent.conf")
 
 command_exists() {
   type "$1" &>/dev/null
@@ -34,6 +39,7 @@ symlink_multiple() {
   files="$2"
 
   for file in $files; do
+    echo "    Linking $file!"
     ln -sf "$CURRENT_PATH/$source_dir/$file" "$HOME/.$file"
   done
 }
@@ -44,7 +50,7 @@ install_fonts() {
   cd fonts
   ./install.sh
   cd ..
-  rm -rf fonts
+  rm -rf ./fonts
 }
 
 install_brew() {
@@ -85,7 +91,12 @@ configure_zsh() {
   echo "    Configuring zsh!"
   symlink_multiple $ZSH_DIR $ZSH_FILES
   ln -sf "$CURRENT_PATH/$ZSH_DIR/$ZSH_THEME" "$OH_MY_ZSH_CONFIG/themes/$ZSH_THEME"
-  brew install zsh-syntax-highlighting
+  # Syntax highlighting
+  rm -rf $OH_MY_ZSH_CONFIG/custom/plugins/zsh-syntax-highlighting
+  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $OH_MY_ZSH_CONFIG/custom/plugins/zsh-syntax-highlighting
+  # Autosuggestions
+  rm -rf $OH_MY_ZSH_CONFIG/custom/plugins/zsh-autosuggestions
+  git clone https://github.com/zsh-users/zsh-autosuggestions $OH_MY_ZSH_CONFIG/custom/plugins/zsh-autosuggestions
 }
 
 install_git() {
@@ -121,16 +132,37 @@ install_neovim_plug() {
 configure_vim() {
   echo "    Configuring vim!"
   symlink_multiple $VIM_DIR $VIM_FILES
+  ln -sf "$CURRENT_PATH/$VIM_DIR/colors" "$HOME/.$VIM_DIR/colors"
 }
 
 configure_nvim() {
   echo "    Configuring neovim!"
-  ln -sf "$CURRENT_PATH/$ZSH_DIR/$ZSH_THEME" "$ZSH_DIR/init.vim"
+  ln -sf "$CURRENT_PATH/$VIM_DIR/vimrc" "$NEOVIM_CONFIG/init.vim"
+  ln -sf "$CURRENT_PATH/$VIM_DIR/colors" "$NEOVIM_CONFIG/colors"
 }
 
 install_tmux() {
   echo "    Installing tmux!"
   brew install tmux
+}
+
+install_tpm() {
+  rm -rf ~/.tmux/plugins/tpm
+  git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+}
+
+configure_tmux() {
+  symlink_multiple $TMUX_DIR $TMUX_FILES
+}
+
+install_gnugp() {
+  echo "    Installing gnupg!"
+  brew install gnupg
+}
+
+configure_gnupg() {
+  echo "    Configuring gnupg!"
+  symlink_multiple $GNUPG_DIR $GNUPG_FILES
 }
 
 if ! command_exists curl; then
@@ -175,6 +207,8 @@ mkdir -p "$NEOVIM_CONFIG"
 install_neovim_plug
 configure_nvim
 
-echo "[ tmux ]"
+echo "[ Tmux ]"
 install_tmux
+install_tpm
+configure_tmux
 
