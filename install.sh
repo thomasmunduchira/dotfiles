@@ -43,22 +43,38 @@ symlink_multiple() {
 
 install_fonts() {
   echo "    Installing Powerline fonts!"
-  git clone https://github.com/powerline/fonts.git --depth=1
-  cd fonts
-  ./install.sh
-  cd ..
-  rm -rf ./fonts
+  if [ $OS = "MACOS" ]; then
+    git clone https://github.com/powerline/fonts.git --depth=1
+    cd fonts
+    ./install.sh
+    cd ..
+    rm -rf ./fonts
+  elif [ $OS = "LINUX" ]; then
+    apt-get install fonts-powerline
+  fi
 }
 
 install_brew() {
-  echo "    Installing brew!"
-  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  if [ $OS = "MACOS" ]; then
+    echo "    Installing brew!"
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  fi
 }
 
 upgrade_brew() {
-  echo "    Upgrading and cleaning up brew formulae!"
-  brew upgrade
-  brew cleanup
+  if [ $OS = "MACOS" ]; then
+    echo "    Upgrading and cleaning up brew formulae!"
+    brew upgrade
+    brew cleanup
+  fi
+}
+
+upgrade_apt() {
+  if [ $OS = "LINUX" ]; then
+    echo "    Upgrading and cleaning up apt formulae!"
+    apt-get update
+    apt-get upgrade
+  fi
 }
 
 install_bash_it() {
@@ -75,7 +91,11 @@ configure_bash() {
 
 install_zsh() {
   echo "    Installing zsh!"
-  brew install zsh
+  if [ $OS = "MACOS" ]; then
+    brew install zsh
+  elif [ $OS = "LINUX" ]; then
+    apt-get install zsh
+  fi
 }
 
 install_oh_my_zsh() {
@@ -98,7 +118,11 @@ configure_zsh() {
 
 install_git() {
   echo "    Installing git!"
-  brew install git
+  if [ $OS = "MACOS" ]; then
+    brew install git
+  elif [ $OS = "LINUX" ]; then
+    apt-get install git
+  fi
 }
 
 configure_git() {
@@ -113,7 +137,11 @@ install_vim() {
 
 install_nvim() {
   echo "    Installing neovim!"
-  brew install neovim
+  if [ $OS = "MACOS" ]; then
+    brew install neovim
+  elif [ $OS = "LINUX" ]; then
+    apt-get install neovim
+  fi
 }
 
 install_vim_plug() {
@@ -140,7 +168,11 @@ configure_nvim() {
 
 install_tmux() {
   echo "    Installing tmux!"
-  brew install tmux
+  if [ $OS = "MACOS" ]; then
+    brew install tmux
+  elif [ $OS = "LINUX" ]; then
+    apt-get install tmux
+  fi
 }
 
 install_tpm() {
@@ -154,13 +186,28 @@ configure_tmux() {
 
 install_gnugp() {
   echo "    Installing gnupg!"
-  brew install gnupg
+  if [ $OS = "MACOS" ]; then
+    brew install gnupg
+  elif [ $OS = "LINUX" ]; then
+    apt-get install gnupg2
+  fi
 }
 
 configure_gnupg() {
   echo "    Configuring gnupg!"
   symlink_multiple $GNUPG_DIR $GNUPG_FILES
 }
+
+if [ "$(uname)" == "Darwin" ]; then
+  OS="MACOS"
+elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+  OS="LINUX"
+else
+  echo "Unsupported OS! Exiting script."
+  exit 3
+fi
+
+echo "Detected OS: $OS"
 
 if ! command_exists curl; then
   echo "Need curl to finish installation! Exiting script."
@@ -170,11 +217,18 @@ fi
 echo "[ Fonts ]"
 install_fonts
 
-echo "[ Homebrew ]"
-if ! command_exists brew; then
-  install_brew
+if [ $OS = "MACOS" ]; then
+  echo "[ Homebrew ]"
+  if ! command_exists brew; then
+    install_brew
+  fi
+  upgrade_brew
 fi
-upgrade_brew
+
+if [ $OS = "LINUX" ]; then
+  echo "[ APT ]"
+  upgrade_apt
+fi
 
 echo "[ Bash ]"
 mkdir -p "$BASH_IT_CONFIG"
