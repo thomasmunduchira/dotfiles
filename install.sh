@@ -1,9 +1,6 @@
 # Don't continue on error
 set -e
 
-# Go to parent directory
-cd ..
-
 # Define constants
 ZSH_THEME="guri.zsh-theme"
 
