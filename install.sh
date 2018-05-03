@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Don't continue on error
 set -e
 
@@ -20,10 +22,10 @@ NEOVIM_CONFIG="$HOME/.config/nvim"
 NEOVIM_LOCAL="$HOME/.local/share/nvim/site"
 GNUPG="$HOME/.gnupg"
 
-BASH_FILES=(bashrc bash_profile)
-ZSH_FILES=(zshrc)
-GIT_FILES=(gitignore gitconfig)
-VIM_FILES=(vimrc)
+BASH_FILES=("bashrc" "bash_profile")
+ZSH_FILES=("zshrc")
+GIT_FILES=("gitignore" "gitconfig")
+VIM_FILES=("vimrc")
 TMUX_FILES=("tmux.conf")
 GNUPG_FILES=("gpg.conf" "gpg-agent.conf")
 
@@ -32,10 +34,11 @@ command_exists() {
 }
 
 symlink_multiple() {
-  source_dir="$1"
-  files="$2"
+  args=("$@") # form an array of all the function arguments
+  source_dir="${args[0]}" # first argument
+  files=("${args[@]:1}") # array of arguments from the second onwards
 
-  for file in $files; do
+  for file in "${files[@]}"; do
     echo "    Linking $file!"
     ln -sf "$CURRENT_PATH/$source_dir/$file" "$HOME/.$file"
   done
@@ -86,7 +89,7 @@ install_bash_it() {
 
 configure_bash() {
   echo "    Configuring bash!"
-  symlink_multiple $BASH_DIR $BASH_FILES
+  symlink_multiple $BASH_DIR "${BASH_FILES[@]}"
 }
 
 install_zsh() {
@@ -106,7 +109,7 @@ install_oh_my_zsh() {
 
 configure_zsh() {
   echo "    Configuring zsh!"
-  symlink_multiple $ZSH_DIR $ZSH_FILES
+  symlink_multiple $ZSH_DIR "${ZSH_FILES[@]}"
   ln -sf "$CURRENT_PATH/$ZSH_DIR/$ZSH_THEME" "$OH_MY_ZSH_CONFIG/themes/$ZSH_THEME"
   # Syntax highlighting
   rm -rf $OH_MY_ZSH_CONFIG/custom/plugins/zsh-syntax-highlighting
@@ -127,7 +130,7 @@ install_git() {
 
 configure_git() {
   echo "    Configuring git!"
-  symlink_multiple $GIT_DIR $GIT_FILES
+  symlink_multiple $GIT_DIR "${GIT_FILES[@]}"
 }
 
 install_vim() {
@@ -156,7 +159,7 @@ install_neovim_plug() {
 
 configure_vim() {
   echo "    Configuring vim!"
-  symlink_multiple $VIM_DIR $VIM_FILES
+  symlink_multiple $VIM_DIR "${VIM_FILES[@]}"
   ln -sf "$CURRENT_PATH/$VIM_DIR/colors" "$HOME/.$VIM_DIR/colors"
 }
 
@@ -181,7 +184,7 @@ install_tpm() {
 }
 
 configure_tmux() {
-  symlink_multiple $TMUX_DIR $TMUX_FILES
+  symlink_multiple $TMUX_DIR "${TMUX_FILES[@]}"
 }
 
 install_gnugp() {
@@ -195,7 +198,7 @@ install_gnugp() {
 
 configure_gnupg() {
   echo "    Configuring gnupg!"
-  symlink_multiple $GNUPG_DIR $GNUPG_FILES
+  symlink_multiple $GNUPG_DIR "${GNUPG_FILES[@]}"
 }
 
 if [ "$(uname)" == "Darwin" ]; then
