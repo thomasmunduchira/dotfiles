@@ -135,7 +135,11 @@ configure_git() {
 
 install_vim() {
   echo "    Installing vim!"
-  brew install vim
+  if [ $OS = "MACOS" ]; then
+    brew install vim
+  elif [ $OS = "LINUX" ]; then
+    apt-get install vim
+  fi
 }
 
 install_nvim() {
