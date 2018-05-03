@@ -1,1 +1,0 @@
-/Users/thomasmunduchira/Documents/Repositories/dotfiles/zsh/guri.zsh-theme
