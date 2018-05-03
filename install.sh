@@ -147,6 +147,9 @@ install_nvim() {
   if [ $OS = "MACOS" ]; then
     brew install neovim
   elif [ $OS = "LINUX" ]; then
+    apt-get install software-properties-common
+    add-apt-repository ppa:neovim-ppa/stable
+    apt-get update
     apt-get install neovim
   fi
 }
