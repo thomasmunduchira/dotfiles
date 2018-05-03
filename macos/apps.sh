@@ -21,5 +21,10 @@ brew cask install private-internet-access
 brew cask install idrive
 brew cask install qbserve
 brew cask install selfcontrol
+brew cask install alfred
 brew cask install adobe-acrobat-reader
+brew cask install wireshark
+brew cask install virtualbox
+brew cask install virtualbox-extension-pack
+brew cask install notion
 
