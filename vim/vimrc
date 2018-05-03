@@ -690,7 +690,7 @@ nnoremap <silent> <leader>L :Lines<CR>
 " Search in ultisnips [s]nippets
 nnoremap <silent> <leader>s :Snippets<CR>
 " Search in [m]arks
-noremap <silent> <leader>m :Marks<CR>
+nnoremap <silent> <leader>m :Marks<CR>
 " Search in edited files [h]istory
 nnoremap <silent> <leader>h :History<CR>
 " Search in search [/] history
