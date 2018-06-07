@@ -40,7 +40,7 @@ symlink_multiple() {
 
   for file in "${files[@]}"; do
     echo "    Linking $file!"
-    ln -sf "$CURRENT_PATH/$source_dir/$file" "$HOME/.$file"
+    ln -fhs "$CURRENT_PATH/$source_dir/$file" "$HOME/.$file"
   done
 }
 
@@ -109,8 +109,9 @@ install_oh_my_zsh() {
 
 configure_zsh() {
   echo "    Configuring zsh!"
+  mkdir -p "$OH_MY_ZSH_CONFIG/themes"
   symlink_multiple $ZSH_DIR "${ZSH_FILES[@]}"
-  ln -sf "$CURRENT_PATH/$ZSH_DIR/$ZSH_THEME" "$OH_MY_ZSH_CONFIG/themes/$ZSH_THEME"
+  ln -fhs "$CURRENT_PATH/$ZSH_DIR/$ZSH_THEME" "$OH_MY_ZSH_CONFIG/themes/$ZSH_THEME"
   # Syntax highlighting
   rm -rf $OH_MY_ZSH_CONFIG/custom/plugins/zsh-syntax-highlighting
   git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $OH_MY_ZSH_CONFIG/custom/plugins/zsh-syntax-highlighting
@@ -156,24 +157,27 @@ install_nvim() {
 
 install_vim_plug() {
   echo "    Installing Plug for vim!"
+  mkdir -p "$VIM_CONFIG/autoload"
   curl -fLo "$VIM_CONFIG"/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 }
 
 install_neovim_plug() {
   echo "    Installing Plug for neovim!"
+  mkdir -p "$NEOVIM_LOCAL/autoload"
   curl -fLo "$NEOVIM_LOCAL"/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 }
 
 configure_vim() {
   echo "    Configuring vim!"
   symlink_multiple $VIM_DIR "${VIM_FILES[@]}"
-  ln -sf "$CURRENT_PATH/$VIM_DIR/colors" "$HOME/.$VIM_DIR/colors"
+  ln -fhs "$CURRENT_PATH/$VIM_DIR/colors" "$HOME/.$VIM_DIR/colors"
 }
 
 configure_nvim() {
   echo "    Configuring neovim!"
-  ln -sf "$CURRENT_PATH/$VIM_DIR/vimrc" "$NEOVIM_CONFIG/init.vim"
-  ln -sf "$CURRENT_PATH/$VIM_DIR/colors" "$NEOVIM_CONFIG/colors"
+  mkdir -p "$NEOVIM_CONFIG"
+  ln -fhs "$CURRENT_PATH/$VIM_DIR/vimrc" "$NEOVIM_CONFIG/init.vim"
+  ln -fhs "$CURRENT_PATH/$VIM_DIR/colors" "$NEOVIM_CONFIG/colors"
 }
 
 install_tmux() {
@@ -241,13 +245,11 @@ if [ $OS = "LINUX" ]; then
 fi
 
 echo "[ Bash ]"
-mkdir -p "$BASH_IT_CONFIG"
 install_bash_it
 configure_bash
 
 echo "[ ZSH ]"
 install_zsh
-mkdir -p "$OH_MY_ZSH_CONFIG/themes"
 install_oh_my_zsh
 configure_zsh
 
@@ -257,14 +259,11 @@ configure_git
 
 echo "[ Vim ]"
 install_vim
-mkdir -p "$VIM_CONFIG/autoload"
 install_vim_plug
 configure_vim
 
 echo "[ Neovim ]"
 install_nvim
-mkdir -p "$NEOVIM_LOCAL/autoload"
-mkdir -p "$NEOVIM_CONFIG"
 install_neovim_plug
 configure_nvim
 
